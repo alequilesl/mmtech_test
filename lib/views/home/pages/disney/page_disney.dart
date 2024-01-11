@@ -17,15 +17,16 @@ class _PageDisneyState extends State<PageDisney> with AutomaticKeepAliveClientMi
   List<DisneyCharacter> chararters= [];
   bool loading= true;
 
+  Future<void> loadData()async{
+    chararters= await DisneyRepository.getDisneyCharecters();
+    setState(() {
+      loading= false;
+    });
+  }
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, ()async{
-      chararters= await DisneyRepository.getDisneyCharecters();
-      setState(() {
-        loading= false;
-      });
-    });
+    Future.delayed(Duration.zero, ()=>loadData());
   }
 
   @override
@@ -34,8 +35,11 @@ class _PageDisneyState extends State<PageDisney> with AutomaticKeepAliveClientMi
     return
       loading
       ? const Center(child: CircularProgressIndicator(),)
-      : GridView.count(crossAxisCount: 3,
-        children: chararters.map((e) => DisneyCard(character: e),).toList());
+      : RefreshIndicator(
+        onRefresh: loadData,
+        child: GridView.count(crossAxisCount: 3,
+          children: chararters.map((e) => DisneyCard(character: e),).toList()),
+      );
   }
   @override
   bool get wantKeepAlive => true;

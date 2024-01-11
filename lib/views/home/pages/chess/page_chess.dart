@@ -14,16 +14,16 @@ class _PageChessState extends State<PageChess> with AutomaticKeepAliveClientMixi
   List<String> GMs= [];
   bool loading= true;
 
+  Future<void> loadData()async{
+    GMs= await ChessRepository.getAllGMPlayer();
+    setState(() {
+      loading= false;
+    });
+  }
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, ()async{
-      GMs= await ChessRepository.getAllGMPlayer();
-      print('GMs: $GMs');
-      setState(() {
-          loading= false;
-      });
-    });
+    Future.delayed(Duration.zero, ()=>loadData());
   }
 
   @override
@@ -32,9 +32,12 @@ class _PageChessState extends State<PageChess> with AutomaticKeepAliveClientMixi
     return
       loading
       ? const Center(child: CircularProgressIndicator(),)
-      : GridView.count(
-        crossAxisCount: MediaQuery.of(context).orientation ==  Orientation.portrait ? 3 : 4,
-        children: GMs.map((e) => PlayerCard(player: e)).toList(),
+      : RefreshIndicator(
+        onRefresh: loadData,
+        child: GridView.count(
+          crossAxisCount: MediaQuery.of(context).orientation ==  Orientation.portrait ? 3 : 4,
+          children: GMs.map((e) => PlayerCard(player: e)).toList(),
+        ),
       );
   }
   @override
