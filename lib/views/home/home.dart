@@ -3,6 +3,7 @@ import 'package:mmtech_test/views/home/pages/chess/page_chess.dart';
 import 'package:mmtech_test/views/home/pages/disney/page_disney.dart';
 
 import 'pages/home/page_home.dart';
+import 'widgets/home_drawer.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -29,6 +30,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(title: Hero(tag: 'mmtech',
       child: Text('MMTECH', style: TextStyle(color: colors.primary),),)),
+      drawer: HomeDrawer(),
       body: PageView(
         controller: _pageViewController,
         onPageChanged: (index) {
